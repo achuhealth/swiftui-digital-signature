@@ -13,7 +13,7 @@ private let fontFamlies = ["Zapfino", "SavoyeLetPlain", "SnellRoundhand", "Snell
 private let bigFontSize: CGFloat = 44
 private let placeholderText = "Signature"
 private let maxHeight: CGFloat = 160
-private let lineWidth: CGFloat = 5
+private let lineWidth: CGFloat = 2
 
 public struct SignatureView: View {
     public let onSave: (UIImage) -> Void
