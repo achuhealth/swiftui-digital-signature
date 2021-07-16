@@ -32,32 +32,52 @@ public struct SignatureView: View {
     @State private var isImageSet = false
     @State private var text = ""
     
-    public init(onSave: @escaping (UIImage) -> Void,
+    var showTabs: Bool
+    var showToolbar: Bool
+    var showColorPicker: Bool
+    var showPlaceholder: Bool
+    
+    public init(showTabs: Bool = true,
+                showToolbar: Bool = true,
+                showColorPicker: Bool = true,
+                showPlaceholder: Bool = true,
+                onSave: @escaping (UIImage) -> Void,
                 onCancel: @escaping () -> Void) {
+        self.showTabs = showTabs
+        self.showToolbar = showToolbar
+        self.showColorPicker = showColorPicker
+        self.showPlaceholder = showPlaceholder
         self.onSave = onSave
         self.onCancel = onCancel
     }
     
     public var body: some View {
         VStack {
-            HStack {
-                Button("Done", action: extractImageAndHandle)
-                Spacer()
-                Button("Cancel", action: onCancel)
-            }
-            Picker(selection: $selectedTab, label: EmptyView()) {
-                ForEach(tabTitles, id: \.self) { tab in
-                    Text(tab)
-                        .tag(tabTitles.firstIndex(of: tab)!)
+            if showToolbar {
+                HStack {
+                    Button("Done", action: extractImageAndHandle)
+                    Spacer()
+                    Button("Cancel", action: onCancel)
                 }
-            }.pickerStyle(SegmentedPickerStyle())
+            }
+            if showTabs {
+                Picker(selection: $selectedTab, label: EmptyView()) {
+                    ForEach(tabTitles, id: \.self) { tab in
+                        Text(tab)
+                            .tag(tabTitles.firstIndex(of: tab)!)
+                    }
+                }
+                .pickerStyle(SegmentedPickerStyle())
+            }
             signatureContent
             Button("Clear signature", action: clear)
             HStack {
                 if selectedTab == Tab.type.rawValue {
                     FontFamilyPicker(selection: $fontFamily)
                 }
-                ColorPickerCompat(selection: $color)
+                if showColorPicker {
+                    ColorPickerCompat(selection: $color)
+                }
 //                Toggle(isOn: $saveSignature) {
 //                    Text("Save on done")
 //                        .frame(maxWidth: .infinity, alignment: .trailing)
@@ -73,7 +93,8 @@ public struct SignatureView: View {
             if tab == .draw {
                 SignatureDrawView(drawing: $drawing,
                                   fontFamily: $fontFamily,
-                                  color: $color)
+                                  color: $color,
+                                  showPlaceholder: showPlaceholder)
             } else if tab == .image {
                 SignatureImageView(isSet: $isImageSet, selection: $image)
             } else if tab == .type {
@@ -212,13 +233,17 @@ struct SignatureDrawView: View {
     @Binding var fontFamily: String
     @Binding var color: Color
     
+    var showPlaceholder: Bool = true
+    
     var body: some View {
         return ZStack {
             Color.white
             if drawing.isEmpty {
-                Text(placeholderText)
-                    .foregroundColor(.gray)
-                    .font(.custom(fontFamily, size: bigFontSize))
+                if showPlaceholder {
+                    Text(placeholderText)
+                        .foregroundColor(.gray)
+                        .font(.custom(fontFamily, size: bigFontSize))
+                }
             } else {
                 DrawShape(drawingPath: drawing)
                     .stroke(lineWidth: lineWidth)
