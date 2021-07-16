@@ -32,17 +32,21 @@ public struct SignatureView: View {
     @State private var isImageSet = false
     @State private var text = ""
     
+    var backgroundColor: Color
+    
     var showTabs: Bool
     var showToolbar: Bool
     var showColorPicker: Bool
     var showPlaceholder: Bool
     
-    public init(showTabs: Bool = true,
+    public init(backgroundColor: Color = .white,
+                showTabs: Bool = true,
                 showToolbar: Bool = true,
                 showColorPicker: Bool = true,
                 showPlaceholder: Bool = true,
                 onSave: @escaping (UIImage) -> Void,
                 onCancel: @escaping () -> Void) {
+        self.backgroundColor = backgroundColor
         self.showTabs = showTabs
         self.showToolbar = showToolbar
         self.showColorPicker = showColorPicker
@@ -94,7 +98,8 @@ public struct SignatureView: View {
                 SignatureDrawView(drawing: $drawing,
                                   fontFamily: $fontFamily,
                                   color: $color,
-                                  showPlaceholder: showPlaceholder)
+                                  showPlaceholder: showPlaceholder,
+                                  backgroundColor: backgroundColor)
             } else if tab == .image {
                 SignatureImageView(isSet: $isImageSet, selection: $image)
             } else if tab == .type {
@@ -233,11 +238,12 @@ struct SignatureDrawView: View {
     @Binding var fontFamily: String
     @Binding var color: Color
     
+    var backgroundColor: Color = .white
     var showPlaceholder: Bool = true
     
     var body: some View {
         return ZStack {
-            Color.white
+            backgroundColor
             if drawing.isEmpty {
                 if showPlaceholder {
                     Text(placeholderText)
