@@ -98,8 +98,8 @@ public struct SignatureView: View {
                 SignatureDrawView(drawing: $drawing,
                                   fontFamily: $fontFamily,
                                   color: $color,
-                                  showPlaceholder: showPlaceholder,
-                                  backgroundColor: backgroundColor)
+                                  backgroundColor: backgroundColor,
+                                  showPlaceholder: showPlaceholder)
             } else if tab == .image {
                 SignatureImageView(isSet: $isImageSet, selection: $image)
             } else if tab == .type {
